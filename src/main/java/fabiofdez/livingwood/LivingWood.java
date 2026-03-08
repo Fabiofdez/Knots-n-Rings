@@ -14,7 +14,7 @@ public class LivingWood implements ModInitializer {
 
   @Override
   public void onInitialize() {
-    LOGGER.info("Initializing Knots 'n Rings");
+    LOGGER.info("Initializing Knots & Rings");
 
     ServerChunkEvents.CHUNK_UNLOAD.register(LogConnectivityCache::invalidateInChunk);
   }
