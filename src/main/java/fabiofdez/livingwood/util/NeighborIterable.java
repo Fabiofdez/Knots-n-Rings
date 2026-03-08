@@ -13,7 +13,7 @@ public final class NeighborIterable {
     this.pos = pos;
   }
 
-  public boolean sustainLife(NeighborConsumer consumer) {
+  public boolean matchCondition(NeighborConsumer consumer) {
     // iterate in layers vertically, starting from top
     for (int dy = 1; dy >= -1; dy--) {
       for (int dx = -1; dx <= 1; dx++) {

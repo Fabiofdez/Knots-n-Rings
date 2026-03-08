@@ -2,6 +2,7 @@ package fabiofdez.livingwood.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 
 import java.util.*;
@@ -10,7 +11,7 @@ public class LogConnectivityCache {
   private static int clusterCounter = 1;
 
   private static final Set<BlockPos> currentlyExploring = new HashSet<>();
-  private static final Map<LevelChunk, Set<Integer>> clusterByChunk = new HashMap<>();
+  private static final Map<ChunkAccess, Set<Integer>> clusterByChunk = new HashMap<>();
   private static final Map<BlockPos, Integer> clusterByPos = new HashMap<>();
   private static final Map<Integer, Boolean> clusterAlive = new HashMap<>();
   private static final Map<Integer, Set<BlockPos>> clusterMembers = new HashMap<>();
@@ -60,7 +61,7 @@ public class LogConnectivityCache {
     clusterMembers.put(clusterId, new HashSet<>(cluster));
   }
 
-  public static void invalidateAttachedTo(LevelChunk chunk, BlockPos origin) {
+  public static void invalidateAttachedTo(ChunkAccess chunk, BlockPos origin) {
     Integer clusterId = clusterByPos.remove(origin);
     if (clusterId == null) return;
 

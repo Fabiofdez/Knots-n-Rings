@@ -3,6 +3,7 @@
   "package": "fabiofdez.livingwood.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "DestroyBlockMixin",
     "LogBehaviourMixin",
     "LogBlockMixin"
   ],

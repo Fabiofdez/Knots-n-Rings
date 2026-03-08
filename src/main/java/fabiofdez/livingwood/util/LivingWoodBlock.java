@@ -46,29 +46,98 @@ public class LivingWoodBlock {
     return state.is(BlockTags.LEAVES) && !state.getValue(LeavesBlock.PERSISTENT);
   }
 
-  public static boolean isAlive(ServerLevel level, BlockPos pos) {
+  public static boolean isAliveNearby(ServerLevel level, BlockPos pos) {
     BlockState state = level.getBlockState(pos);
     if (LivingWoodBlock.isStripped(state)) return false;
 
-    return neighborsOf(level, pos).sustainLife((neighbor, neighborPos) -> {
+    return neighborsOf(level, pos).matchCondition((neighbor, neighborPos) -> {
       if (LivingWoodBlock.isNaturalLeaves(neighbor)) {
         return true;
       }
 
       if (LivingWoodBlock.isNaturalWood(neighbor)) {
-        return neighbor.getValue(Properties.ALIVE);
+        return !isNonliving(neighbor);
       }
 
       return false;
     });
   }
 
+  public static boolean isTrunkNearby(ServerLevel level, BlockPos pos) {
+    BlockState state = level.getBlockState(pos);
+    if (LivingWoodBlock.isStripped(state)) return false;
+
+    return neighborsOf(level, pos).matchCondition((neighbor, neighborPos) -> {
+      if (LivingWoodBlock.isNaturalLeaves(neighbor)) {
+        return true;
+      }
+
+      if (LivingWoodBlock.isNaturalWood(neighbor)) {
+        return isTrunk(neighbor);
+      }
+
+      return false;
+    });
+  }
+
+  public static boolean isNonliving(BlockState state) {
+    return state.getValue(Properties.NONLIVING);
+  }
+
+  public static boolean isSingleton(BlockState state) {
+    return state.getValue(Properties.SINGLETON);
+  }
+
+  public static boolean isTrunk(BlockState state) {
+    return state.getValue(Properties.IS_TRUNK);
+  }
+
   public static NeighborIterable neighborsOf(ServerLevel level, BlockPos pos) {
     return new NeighborIterable(level, pos);
   }
 
+  public static void updateState(ServerLevel level, BlockPos pos, boolean nowAlive) {
+    BlockState state = level.getBlockState(pos);
+    if (!state.hasProperty(LivingWoodBlock.Properties.NONLIVING)) return;
+
+    boolean stateChanged = false;
+    if (LivingWoodBlock.isSingleton(state)) {
+      state = state
+          .setValue(LivingWoodBlock.Properties.SINGLETON, false)
+          .setValue(LivingWoodBlock.Properties.IS_TRUNK, nowAlive);
+      stateChanged = true;
+    }
+    if (LivingWoodBlock.isNonliving(state) == nowAlive) {
+      state = state.setValue(LivingWoodBlock.Properties.NONLIVING, !nowAlive);
+      stateChanged = true;
+    }
+
+    if (stateChanged) level.setBlockAndUpdate(pos, state);
+  }
+
+  public static void updateIsTrunk(ServerLevel level, BlockPos pos, boolean isTrunk) {
+    BlockState state = level.getBlockState(pos);
+    if (isTrunk(state) == isTrunk) return;
+
+    level.setBlockAndUpdate(pos, state.setValue(Properties.IS_TRUNK, isTrunk));
+  }
+
+  public static void resetSingleton(ServerLevel level, BlockPos pos) {
+    BlockState state = level.getBlockState(pos);
+    if (isSingleton(state)) return;
+
+    level.setBlockAndUpdate(
+        pos,
+        state
+            .setValue(Properties.SINGLETON, true)
+            .setValue(Properties.IS_TRUNK, false)
+    );
+  }
+
   public static class Properties {
-    public static final BooleanProperty ALIVE = BooleanProperty.create("alive");
+    public static final BooleanProperty NONLIVING = BooleanProperty.create("nonliving");
+    public static final BooleanProperty SINGLETON = BooleanProperty.create("singleton");
+    public static final BooleanProperty IS_TRUNK = BooleanProperty.create("is_trunk");
   }
 
 }
