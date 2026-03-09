@@ -16,7 +16,7 @@ public class DestroyBlockMixin {
   @Inject(method = "destroy", at = @At("TAIL"))
   protected void LivingWood$blockDestroy(LevelAccessor levelAccessor, BlockPos pos, BlockState state, CallbackInfo ci) {
     if (!state.hasProperty(LivingWoodBlock.Properties.NONLIVING)) return;
-    if (!LivingWoodBlock.isWood(state)) return;
+    if (!LivingWoodBlock.isNaturalWood(state)) return;
 
     if (LogConnectivityCache.checkCached(pos) != null) {
       LogConnectivityCache.invalidateAttachedTo(levelAccessor.getChunk(pos), pos);

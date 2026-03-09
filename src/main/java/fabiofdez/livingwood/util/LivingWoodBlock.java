@@ -14,31 +14,9 @@ public class LivingWoodBlock {
         .getKey(state.getBlock())
         .getPath();
 
-    return isWood(blockIdPath) && !isStripped(blockIdPath);
-  }
-
-  public static boolean isWood(BlockState state) {
-    String blockIdPath = BuiltInRegistries.BLOCK
-        .getKey(state.getBlock())
-        .getPath();
-
-    return isWood(blockIdPath);
-  }
-
-  public static boolean isStripped(BlockState state) {
-    String blockIdPath = BuiltInRegistries.BLOCK
-        .getKey(state.getBlock())
-        .getPath();
-
-    return isStripped(blockIdPath);
-  }
-
-  private static boolean isWood(String path) {
-    return (path.endsWith("_log") || path.endsWith("_wood"));
-  }
-
-  private static boolean isStripped(String path) {
-    return path.startsWith("stripped_");
+    boolean isWood = blockIdPath.endsWith("_log") || blockIdPath.endsWith("_wood");
+    boolean isStripped = blockIdPath.startsWith("stripped_");
+    return isWood && !isStripped;
   }
 
   public static boolean isNaturalLeaves(BlockState state) {
@@ -46,11 +24,10 @@ public class LivingWoodBlock {
     return state.is(BlockTags.LEAVES) && !state.getValue(LeavesBlock.PERSISTENT);
   }
 
-  public static boolean isAliveNearby(ServerLevel level, BlockPos pos) {
-    BlockState state = level.getBlockState(pos);
-    if (LivingWoodBlock.isStripped(state)) return false;
+  public static boolean isAliveNearby(BlockState state, ServerLevel level, BlockPos pos) {
+    if (!LivingWoodBlock.isNaturalWood(state)) return false;
 
-    return neighborsOf(level, pos).matchCondition((neighbor, neighborPos) -> {
+    return neighborsOf(level, pos).any((neighbor, neighborPos) -> {
       if (LivingWoodBlock.isNaturalLeaves(neighbor)) {
         return true;
       }
@@ -63,11 +40,10 @@ public class LivingWoodBlock {
     });
   }
 
-  public static boolean isTrunkNearby(ServerLevel level, BlockPos pos) {
-    BlockState state = level.getBlockState(pos);
-    if (LivingWoodBlock.isStripped(state)) return false;
+  public static boolean isTrunkNearby(BlockState state, ServerLevel level, BlockPos pos) {
+    if (!LivingWoodBlock.isNaturalWood(state)) return false;
 
-    return neighborsOf(level, pos).matchCondition((neighbor, neighborPos) -> {
+    return neighborsOf(level, pos).any((neighbor, neighborPos) -> {
       if (LivingWoodBlock.isNaturalLeaves(neighbor)) {
         return true;
       }

@@ -34,7 +34,7 @@ public class LogBehaviourMixin {
   @Inject(method = "isRandomlyTicking", at = @At("HEAD"), cancellable = true)
   private void LivingWood$isRandomlyTicking(BlockState state, CallbackInfoReturnable<Boolean> cir) {
     if (!state.hasProperty(LivingWoodBlock.Properties.NONLIVING)) return;
-    if (!LivingWoodBlock.isWood(state)) return;
+    if (!LivingWoodBlock.isNaturalWood(state)) return;
 
     cir.setReturnValue(true);
   }
@@ -42,7 +42,7 @@ public class LogBehaviourMixin {
   @Inject(method = "randomTick", at = @At("HEAD"))
   private void LivingWood$randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource tickSrc, CallbackInfo ci) {
     if (!state.hasProperty(LivingWoodBlock.Properties.NONLIVING)) return;
-    if (!LivingWoodBlock.isWood(state)) return;
+    if (!LivingWoodBlock.isNaturalWood(state)) return;
 
     if (LogConnectivityCache.exploring(pos)) return;
     Boolean cachedAlive = LogConnectivityCache.checkCached(pos);
@@ -52,13 +52,15 @@ public class LogBehaviourMixin {
       LivingWoodBlock.updateState(level, pos, cachedAlive);
     }
 
-    if (LivingWoodBlock.isTrunkNearby(level, pos)) LivingWoodBlock.updateIsTrunk(level, pos, true);
+    if (LivingWoodBlock.isTrunkNearby(state, level, pos)) {
+      LivingWoodBlock.updateIsTrunk(level, pos, true);
+    }
   }
 
   @Inject(method = "useItemOn", at = @At("TAIL"), cancellable = true)
   protected void LivingWood$useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
     if (!state.hasProperty(LivingWoodBlock.Properties.NONLIVING)) return;
-    if (!LivingWoodBlock.isWood(state)) return;
+    if (!LivingWoodBlock.isNaturalWood(state)) return;
 
     if (stack.is(ItemTags.PICKAXES) && LivingWoodBlock.isTrunk(state)) {
       if (level.isClientSide) {

@@ -40,7 +40,7 @@ public class LivingWoodCluster {
 
       boolean found = LivingWoodBlock
           .neighborsOf(level, current)
-          .matchCondition((neighbor, neighborPos) -> {
+          .any((neighbor, neighborPos) -> {
             if (LivingWoodBlock.isNaturalLeaves(neighbor)) {
               foundPath.set(buildTracedPath(pathTrace, current));
               return true;

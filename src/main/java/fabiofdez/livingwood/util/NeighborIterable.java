@@ -13,7 +13,7 @@ public final class NeighborIterable {
     this.pos = pos;
   }
 
-  public boolean matchCondition(NeighborConsumer consumer) {
+  public boolean any(NeighborPredicate predicate) {
     // iterate in layers vertically, starting from top
     for (int dy = 1; dy >= -1; dy--) {
       for (int dx = -1; dx <= 1; dx++) {
@@ -23,7 +23,7 @@ public final class NeighborIterable {
           BlockPos neighborPos = this.pos.offset(dx, dy, dz);
           BlockState neighbor = this.level.getBlockState(neighborPos);
 
-          if (consumer.accept(neighbor, neighborPos)) return true;
+          if (predicate.eval(neighbor, neighborPos)) return true;
         }
       }
     }
@@ -32,7 +32,7 @@ public final class NeighborIterable {
   }
 
   @FunctionalInterface
-  public interface NeighborConsumer {
-    boolean accept(BlockState state, BlockPos pos);
+  public interface NeighborPredicate {
+    boolean eval(BlockState state, BlockPos pos);
   }
 }

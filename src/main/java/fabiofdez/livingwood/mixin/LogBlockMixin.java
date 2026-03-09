@@ -37,20 +37,15 @@ public class LogBlockMixin implements BonemealableBlock {
     if (level.isClientSide) return;
 
     BlockState state = cir.getReturnValue();
-    if (!LivingWoodBlock.isWood(state)) return;
+    if (!LivingWoodBlock.isNaturalWood(state)) return;
 
     Block placedBlock = state.getBlock();
     ItemStack itemInHand = ctx.getItemInHand();
     if (!itemInHand.is(placedBlock.asItem())) return;
 
-    if (LivingWoodBlock.isStripped(state)) {
-      cir.setReturnValue(state.setValue(LivingWoodBlock.Properties.NONLIVING, true));
-      return;
-    }
-
     BlockPos pos = ctx.getClickedPos();
-    boolean alive = LivingWoodBlock.isAliveNearby((ServerLevel) level, pos);
-    boolean isTrunk = LivingWoodBlock.isTrunkNearby((ServerLevel) level, pos);
+    boolean alive = LivingWoodBlock.isAliveNearby(state, (ServerLevel) level, pos);
+    boolean isTrunk = LivingWoodBlock.isTrunkNearby(state, (ServerLevel) level, pos);
 
     cir.setReturnValue(state
         .setValue(LivingWoodBlock.Properties.NONLIVING, !alive)
