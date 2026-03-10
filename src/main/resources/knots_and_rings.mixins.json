@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "fabiofdez.knots_and_rings.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "DestroyBlockMixin",
+    "LogBehaviourMixin",
+    "LogBlockMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+	}
+}

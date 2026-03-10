@@ -1,34 +1,32 @@
 {
 	"schemaVersion": 1,
-	"id": "livingwood",
+	"id": "knots_and_rings",
 	"version": "${version}",
 	"name": "Knots & Rings",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Bring trees to life with natural details like seamless growth rings and bark imperfections",
 	"authors": [
-		"Me!"
+		"Fabiofdez"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/Fabiofdez/Knots-n-Rings"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/livingwood/icon.png",
+	"icon": "assets/knots_and_rings/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"fabiofdez.livingwood.LivingWood"
+			"fabiofdez.knots_and_rings.KnotsAndRings"
 		],
 		"client": [
-			"fabiofdez.livingwood.LivingWoodClient"
+			"fabiofdez.knots_and_rings.KnotsAndRingsClient"
 		],
 		"fabric-datagen": [
-			"fabiofdez.livingwood.LivingWoodDataGenerator"
 		]
 	},
 	"mixins": [
-		"livingwood.mixins.json",
+		"knots_and_rings.mixins.json",
 		{
-			"config": "livingwood.client.mixins.json",
+			"config": "knots_and_rings.client.mixins.json",
 			"environment": "client"
 		}
 	],
