@@ -2,12 +2,13 @@ package fabiofdez.knots_and_rings.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.LevelReader;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LivingWoodCluster {
-  public static void revivePathOrDecay(ServerLevel level, BlockPos pos) {
+  public static void attemptRevivePath(ServerLevel level, BlockPos pos) {
     revivePathOrDecay(level, pos, false);
   }
 
@@ -25,7 +26,7 @@ public class LivingWoodCluster {
     }
   }
 
-  public static List<BlockPos> findPathToLeaves(ServerLevel level, BlockPos start, Set<BlockPos> cluster) {
+  public static List<BlockPos> findPathToLeaves(LevelReader level, BlockPos start, Set<BlockPos> cluster) {
     Queue<BlockPos> queue = new ArrayDeque<>();
     Map<BlockPos, BlockPos> pathTrace = new HashMap<>();
     AtomicReference<List<BlockPos>> foundPath = new AtomicReference<>(null);
@@ -61,7 +62,7 @@ public class LivingWoodCluster {
 
     List<BlockPos> pathToForget = Objects.requireNonNullElseGet(resolvedPath, () -> List.copyOf(cluster));
     LogConnectivityCache.forgetPathExplored(pathToForget);
-    LogConnectivityCache.cacheCluster(level.getChunkAt(start), cluster, resolvedPath != null);
+    LogConnectivityCache.cacheCluster(level.getChunk(start), cluster, resolvedPath != null);
 
     return resolvedPath;
   }

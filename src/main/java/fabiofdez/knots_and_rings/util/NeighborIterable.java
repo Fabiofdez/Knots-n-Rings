@@ -1,14 +1,14 @@
 package fabiofdez.knots_and_rings.util;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 
 public final class NeighborIterable {
-  private final ServerLevel level;
+  private final LevelReader level;
   private final BlockPos pos;
 
-  public NeighborIterable(ServerLevel level, BlockPos pos) {
+  public NeighborIterable(LevelReader level, BlockPos pos) {
     this.level = level;
     this.pos = pos;
   }

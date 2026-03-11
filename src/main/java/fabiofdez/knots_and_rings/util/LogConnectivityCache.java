@@ -3,7 +3,6 @@ package fabiofdez.knots_and_rings.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.LevelChunk;
 
 import java.util.*;
 
@@ -44,7 +43,7 @@ public class LogConnectivityCache {
     return null;
   }
 
-  public static void cacheCluster(LevelChunk chunk, Set<BlockPos> cluster, boolean alive) {
+  public static void cacheCluster(ChunkAccess chunk, Set<BlockPos> cluster, boolean alive) {
     int clusterId = clusterCounter++;
     clusterAlive.put(clusterId, alive);
 
@@ -73,7 +72,7 @@ public class LogConnectivityCache {
     invalidateClusterById(clusterId);
   }
 
-  public static void invalidateInChunk(ServerLevel ignored, LevelChunk chunk) {
+  public static void invalidateInChunk(ServerLevel ignored, ChunkAccess chunk) {
     Set<Integer> clustersAtChunk = clusterByChunk.remove(chunk);
     if (clustersAtChunk == null) return;
 

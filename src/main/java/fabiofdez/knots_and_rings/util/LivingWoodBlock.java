@@ -4,12 +4,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 public class LivingWoodBlock {
   public static boolean isNaturalWood(BlockState state) {
+    if (!state.hasProperty(Properties.ALIVE)) return false;
+
     String blockIdPath = BuiltInRegistries.BLOCK
         .getKey(state.getBlock())
         .getPath();
@@ -25,15 +28,15 @@ public class LivingWoodBlock {
   }
 
   public static boolean isAliveNearby(BlockState state, ServerLevel level, BlockPos pos) {
-    if (!LivingWoodBlock.isNaturalWood(state)) return false;
+    if (!isNaturalWood(state)) return false;
 
     return neighborsOf(level, pos).any((neighbor, neighborPos) -> {
-      if (LivingWoodBlock.isNaturalLeaves(neighbor)) {
+      if (isNaturalLeaves(neighbor)) {
         return true;
       }
 
-      if (LivingWoodBlock.isNaturalWood(neighbor)) {
-        return !isNonliving(neighbor);
+      if (isNaturalWood(neighbor)) {
+        return isAlive(neighbor);
       }
 
       return false;
@@ -41,14 +44,14 @@ public class LivingWoodBlock {
   }
 
   public static boolean isTrunkNearby(BlockState state, ServerLevel level, BlockPos pos) {
-    if (!LivingWoodBlock.isNaturalWood(state)) return false;
+    if (!isNaturalWood(state)) return false;
 
     return neighborsOf(level, pos).any((neighbor, neighborPos) -> {
-      if (LivingWoodBlock.isNaturalLeaves(neighbor)) {
+      if (isNaturalLeaves(neighbor)) {
         return true;
       }
 
-      if (LivingWoodBlock.isNaturalWood(neighbor)) {
+      if (isNaturalWood(neighbor)) {
         return isTrunk(neighbor);
       }
 
@@ -56,8 +59,8 @@ public class LivingWoodBlock {
     });
   }
 
-  public static boolean isNonliving(BlockState state) {
-    return state.getValue(Properties.NONLIVING);
+  public static boolean isAlive(BlockState state) {
+    return state.getValue(Properties.ALIVE);
   }
 
   public static boolean isSingleton(BlockState state) {
@@ -68,23 +71,23 @@ public class LivingWoodBlock {
     return state.getValue(Properties.IS_TRUNK);
   }
 
-  public static NeighborIterable neighborsOf(ServerLevel level, BlockPos pos) {
+  public static NeighborIterable neighborsOf(LevelReader level, BlockPos pos) {
     return new NeighborIterable(level, pos);
   }
 
   public static void updateState(ServerLevel level, BlockPos pos, boolean nowAlive) {
     BlockState state = level.getBlockState(pos);
-    if (!state.hasProperty(LivingWoodBlock.Properties.NONLIVING)) return;
+    if (!state.hasProperty(Properties.ALIVE)) return;
 
     boolean stateChanged = false;
-    if (LivingWoodBlock.isSingleton(state)) {
+    if (isSingleton(state)) {
       state = state
-          .setValue(LivingWoodBlock.Properties.SINGLETON, false)
-          .setValue(LivingWoodBlock.Properties.IS_TRUNK, nowAlive);
+          .setValue(Properties.SINGLETON, false)
+          .setValue(Properties.IS_TRUNK, nowAlive);
       stateChanged = true;
     }
-    if (LivingWoodBlock.isNonliving(state) == nowAlive) {
-      state = state.setValue(LivingWoodBlock.Properties.NONLIVING, !nowAlive);
+    if (isAlive(state) != nowAlive) {
+      state = state.setValue(Properties.ALIVE, nowAlive);
       stateChanged = true;
     }
 
@@ -111,7 +114,7 @@ public class LivingWoodBlock {
   }
 
   public static class Properties {
-    public static final BooleanProperty NONLIVING = BooleanProperty.create("nonliving");
+    public static final BooleanProperty ALIVE = BooleanProperty.create("alive");
     public static final BooleanProperty SINGLETON = BooleanProperty.create("singleton");
     public static final BooleanProperty IS_TRUNK = BooleanProperty.create("is_trunk");
   }
