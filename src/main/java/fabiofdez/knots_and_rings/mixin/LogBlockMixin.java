@@ -4,7 +4,6 @@ import fabiofdez.knots_and_rings.util.LivingWoodBlock;
 import fabiofdez.knots_and_rings.util.LivingWoodCluster;
 import fabiofdez.knots_and_rings.util.LogConnectivityCache;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -39,8 +37,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.HashSet;
 
 @Mixin(RotatedPillarBlock.class)
 public class LogBlockMixin extends Block implements BonemealableBlock {
@@ -119,22 +115,6 @@ public class LogBlockMixin extends Block implements BonemealableBlock {
     if (LivingWoodBlock.isTrunkNearby(state, level, pos)) {
       LivingWoodBlock.updateIsTrunk(level, pos, true);
     }
-  }
-
-  @Override
-  protected @NotNull BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess tickAccess, BlockPos pos, Direction dir, BlockPos pos2, BlockState state2, RandomSource src) {
-    BlockState newState = super.updateShape(state, level, tickAccess, pos, dir, pos2, state2, src);
-    if (!LivingWoodBlock.isNaturalWood(state)) return newState;
-    if (!LivingWoodBlock.isSingleton(state) || LogConnectivityCache.exploring(pos)) return newState;
-
-    if (LivingWoodCluster.findPathToLeaves(level, pos, new HashSet<>()) != null) {
-      return newState
-          .setValue(ALIVE, true)
-          .setValue(IS_TRUNK, true)
-          .setValue(SINGLETON, false);
-    }
-
-    return newState.setValue(SINGLETON, false);
   }
 
   @Override

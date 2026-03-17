@@ -30,6 +30,7 @@ public class LivingWoodCluster {
     Queue<BlockPos> queue = new ArrayDeque<>();
     Map<BlockPos, BlockPos> pathTrace = new HashMap<>();
     AtomicReference<List<BlockPos>> foundPath = new AtomicReference<>(null);
+    AtomicReference<BlockPos> existingAttachment = new AtomicReference<>(null);
 
     queue.add(start);
     pathTrace.put(start, null);
@@ -44,6 +45,15 @@ public class LivingWoodCluster {
           .any((neighbor, neighborPos) -> {
             if (LivingWoodBlock.isNaturalLeaves(neighbor)) {
               foundPath.set(buildTracedPath(pathTrace, current));
+              return true;
+            }
+
+            Boolean cachedNeighborAlive = LogConnectivityCache.checkCached(neighborPos);
+            if (cachedNeighborAlive != null) {
+              if (cachedNeighborAlive) {
+                foundPath.set(buildTracedPath(pathTrace, current));
+              }
+              existingAttachment.set(neighborPos.immutable());
               return true;
             }
 
@@ -62,7 +72,15 @@ public class LivingWoodCluster {
 
     List<BlockPos> pathToForget = Objects.requireNonNullElseGet(resolvedPath, () -> List.copyOf(cluster));
     LogConnectivityCache.forgetPathExplored(pathToForget);
-    LogConnectivityCache.cacheCluster(level.getChunk(start), cluster, resolvedPath != null);
+    if (existingAttachment.get() != null) {
+      if (resolvedPath != null) {
+        LogConnectivityCache.attachToCluster(existingAttachment.get(), resolvedPath);
+      } else {
+        LogConnectivityCache.attachToCluster(existingAttachment.get(), cluster);
+      }
+    } else {
+      LogConnectivityCache.cacheCluster(level.getChunk(start), cluster, resolvedPath != null);
+    }
 
     return resolvedPath;
   }

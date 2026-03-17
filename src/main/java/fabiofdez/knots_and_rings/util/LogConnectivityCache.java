@@ -60,6 +60,19 @@ public class LogConnectivityCache {
     clusterMembers.put(clusterId, new HashSet<>(cluster));
   }
 
+  public static void attachToCluster(BlockPos origin, Iterable<BlockPos> path) {
+    Integer clusterId = clusterByPos.get(origin);
+    if (clusterId == null) return;
+
+    Set<BlockPos> attachedBlocks = clusterMembers.get(clusterId);
+    if (attachedBlocks == null) return;
+
+    for (BlockPos newPos : path) {
+      clusterByPos.put(newPos.immutable(), clusterId);
+      attachedBlocks.add(newPos);
+    }
+  }
+
   public static void invalidateAttachedTo(ChunkAccess chunk, BlockPos origin) {
     Integer clusterId = clusterByPos.remove(origin);
     if (clusterId == null) return;
