@@ -72,7 +72,7 @@ public class LogBlockMixin extends Block implements BonemealableBlock {
   @Inject(method = "getStateForPlacement", at = @At("TAIL"), cancellable = true)
   protected void LivingWood$getStateForPlacement(BlockPlaceContext ctx, CallbackInfoReturnable<BlockState> cir) {
     Level level = ctx.getLevel();
-    if (level.isClientSide) return;
+    if (level.isClientSide()) return;
 
     BlockState state = cir.getReturnValue();
     if (!LivingWoodBlock.isNaturalWood(state)) return;
@@ -123,7 +123,7 @@ public class LogBlockMixin extends Block implements BonemealableBlock {
     if (!LivingWoodBlock.isNaturalWood(state)) return InteractionResult.PASS;
 
     if (stack.is(ItemTags.PICKAXES) && LivingWoodBlock.isTrunk(state)) {
-      if (level.isClientSide) {
+      if (level.isClientSide()) {
         ParticleUtils.spawnParticlesOnBlockFace(
             level,
             pos,
@@ -146,7 +146,7 @@ public class LogBlockMixin extends Block implements BonemealableBlock {
       return InteractionResult.SUCCESS;
 
     } else if (stack.is(Items.BONE_MEAL) && !LivingWoodBlock.isTrunk(state)) {
-      if (level.isClientSide) {
+      if (level.isClientSide()) {
         ParticleUtils.spawnParticlesOnBlockFace(
             level,
             pos,
