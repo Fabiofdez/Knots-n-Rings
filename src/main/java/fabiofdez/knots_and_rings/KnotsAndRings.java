@@ -16,6 +16,7 @@ public class KnotsAndRings implements ModInitializer {
   public void onInitialize() {
     LOGGER.info("Initializing Knots & Rings");
 
+    ModSounds.initialize();
     ServerChunkEvents.CHUNK_UNLOAD.register(LogConnectivityCache::invalidateInChunk);
   }
 

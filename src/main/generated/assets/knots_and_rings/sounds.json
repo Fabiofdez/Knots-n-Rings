@@ -1,0 +1,46 @@
+{
+  "crack_wood": {
+    "category": "block",
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:block.bamboo.hit",
+        "volume": 0.4
+      }
+    ],
+    "subtitle": "subtitles.knots_and_rings.crack_wood"
+  },
+  "heal_wood": {
+    "category": "block",
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:block.moss.place",
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.knots_and_rings.heal_wood"
+  },
+  "heal_wood_alt": {
+    "category": "block",
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:block.composter.fill_success",
+        "volume": 0.4
+      }
+    ],
+    "subtitle": "subtitles.knots_and_rings.heal_wood_alt"
+  },
+  "split_wood": {
+    "category": "block",
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:item.axe.strip",
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.knots_and_rings.split_wood"
+  }
+}

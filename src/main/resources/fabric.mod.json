@@ -21,6 +21,7 @@
 			"fabiofdez.knots_and_rings.KnotsAndRingsClient"
 		],
 		"fabric-datagen": [
+			"fabiofdez.knots_and_rings.ModDataGenerator"
 		]
 	},
 	"mixins": [

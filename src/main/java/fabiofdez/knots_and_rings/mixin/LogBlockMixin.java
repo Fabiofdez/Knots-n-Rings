@@ -1,5 +1,6 @@
 package fabiofdez.knots_and_rings.mixin;
 
+import fabiofdez.knots_and_rings.ModSounds;
 import fabiofdez.knots_and_rings.util.LivingWoodBlock;
 import fabiofdez.knots_and_rings.util.LivingWoodCluster;
 import fabiofdez.knots_and_rings.util.LogConnectivityCache;
@@ -7,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ParticleUtils;
@@ -139,8 +139,8 @@ public class LogBlockMixin extends Block implements BonemealableBlock {
         LivingWoodBlock.updateIsTrunk((ServerLevel) level, pos, false);
 
         float pitch = 0.8F + level.random.nextFloat() * 0.2F;
-        level.playSound(null, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 0.8F, pitch);
-        level.playSound(null, pos, SoundEvents.BAMBOO_HIT, SoundSource.BLOCKS, 0.4F, pitch);
+        level.playSound(null, pos, ModSounds.SPLIT_WOOD, SoundSource.BLOCKS, 1F, pitch);
+        level.playSound(null, pos, ModSounds.CRACK_WOOD, SoundSource.BLOCKS, 1F, pitch);
         if (!player.isCreative() && stack.isDamageableItem()) stack.setDamageValue(stack.getDamageValue() - 1);
       }
       return InteractionResult.SUCCESS;
@@ -161,8 +161,8 @@ public class LogBlockMixin extends Block implements BonemealableBlock {
         LivingWoodBlock.updateIsTrunk((ServerLevel) level, pos, true);
 
         float pitch = 0.8F + level.random.nextFloat() * 0.2F;
-        level.playSound(null, pos, SoundEvents.MOSS_PLACE, SoundSource.BLOCKS, 0.8F, pitch);
-        level.playSound(null, pos, SoundEvents.COMPOSTER_FILL_SUCCESS, SoundSource.BLOCKS, 0.4F, 1.2F);
+        level.playSound(null, pos, ModSounds.HEAL_WOOD, SoundSource.BLOCKS, 1F, pitch);
+        level.playSound(null, pos, ModSounds.HEAL_WOOD_ALT, SoundSource.BLOCKS, 1F, 1.2F);
         stack.consume(1, player);
       }
       return InteractionResult.SUCCESS;
